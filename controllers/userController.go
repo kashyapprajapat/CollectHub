@@ -2,7 +2,7 @@ package controllers
 
 import (
     "context"
-    "go-fiber-mongo-api/models"
+    "github.com/kashyapprajapat/collecthub_api/models"
     "log"
     "time"
 
