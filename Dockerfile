@@ -1,20 +1,33 @@
-# 1. Use Go base image
-FROM golang:1.21-alpine
+# Use official Go 1.24 image
+FROM golang:1.24 as builder
 
-# 2. Set working directory
 WORKDIR /app
 
-# 3. Copy go.mod and go.sum
+# Copy go mod and sum files
 COPY go.mod go.sum ./
-
-# 4. Download dependencies
 RUN go mod download
 
-# 5. Copy the entire project
+# Copy the source code
 COPY . .
 
-# 6. Build the Go app
+# Build the app
 RUN go build -o main .
 
-# 7. Command to run the executable
-CMD ["/app/main"]
+# Use a minimal image to run the app
+FROM debian:bullseye-slim
+WORKDIR /app
+
+# Copy the binary from the builder
+COPY --from=builder /app/main .
+
+# Copy .env if needed
+# COPY --from=builder /app/.env .
+
+# Set environment variable to production
+ENV FIBER_ENV=production
+
+# Expose port
+EXPOSE 10000
+
+# Run the app
+CMD ["./main"]

@@ -10,6 +10,7 @@ import (
     "github.com/gofiber/fiber/v2"
     "github.com/joho/godotenv"
     "github.com/kashyapprajapat/collecthub_api/routes"
+    "github.com/gofiber/fiber/v2/middleware/cors" 
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -43,6 +44,10 @@ func main() {
     db := client.Database(dbName)
 
     app := fiber.New()
+   
+    // 🔓 Enable CORS for all origins
+    app.Use(cors.New())
+    
     routes.SetupRoutes(app, db)
 
     // ✅ Log server startup info
