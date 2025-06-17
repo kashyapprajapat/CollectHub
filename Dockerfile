@@ -1,33 +1,35 @@
-# Use official Go 1.24 image
-FROM golang:1.24 as builder
+# -------- Stage 1: Build --------
+FROM golang:1.24-alpine AS builder
+
+# Set environment for static build
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
 WORKDIR /app
 
-# Copy go mod and sum files
+# Copy go.mod and go.sum to download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the source code
+# Copy the full source code
 COPY . .
 
-# Build the app
-RUN go build -o main .
+# Build the Go binary statically
+RUN go build -a -installsuffix cgo -o main .
 
-# Use a minimal image to run the app
-FROM debian:bullseye-slim
-WORKDIR /app
+# -------- Stage 2: Run --------
+FROM alpine:latest
 
-# Copy the binary from the builder
+# Install certs (for HTTPS env & Mongo URI)
+RUN apk --no-cache add ca-certificates
+
+# Set working directory inside container
+WORKDIR /root/
+
+# Copy built Go binary from builder
 COPY --from=builder /app/main .
 
-# Copy .env if needed
-# COPY --from=builder /app/.env .
-
-# Set environment variable to production
-ENV FIBER_ENV=production
-
-# Expose port
+# Expose your actual app port
 EXPOSE 10000
 
-# Run the app
+# Run the binary
 CMD ["./main"]
