@@ -1,0 +1,17 @@
+# Binaries
+main
+
+# Git
+.git
+.gitignore
+
+# Logs
+*.log
+
+# Vendor (if you’re not using Go modules)
+vendor/
+
+# OS and IDE-specific
+.DS_Store
+*.swp
+.env

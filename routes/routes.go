@@ -3,7 +3,8 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
-
+    "runtime"
+	"fmt"
 	"github.com/kashyapprajapat/collecthub_api/controllers"
 )
 
@@ -27,6 +28,42 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 			<body>
 				<h1>🚀 Welcome to the CollectHub API</h1>
 				<p>This is the backend service for managing users and collections (books, movies, quotes, pets, travel, etc.).</p>
+			</body>
+		</html>
+		`
+		return c.Type("html").SendString(htmlContent)
+	})
+
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("Pong")
+	})
+
+	//System health route
+		app.Get("/hell", func(c *fiber.Ctx) error {
+		var memStats runtime.MemStats
+		runtime.ReadMemStats(&memStats)
+
+		htmlContent := `
+		<html>
+			<head>
+				<title>System Status - CollectHub</title>
+				<style>
+					body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+					.container { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+					h1 { color: #333; }
+					p { font-size: 16px; }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<h1>🌐 System Health Dashboard</h1>
+					<p><strong>Go Version:</strong> ` + runtime.Version() + `</p>
+					<p><strong>Num CPU:</strong> ` + itoa(runtime.NumCPU()) + `</p>
+					<p><strong>Memory Allocated:</strong> ` + formatBytes(memStats.Alloc) + `</p>
+					<p><strong>Total Memory Allocated:</strong> ` + formatBytes(memStats.TotalAlloc) + `</p>
+					<p><strong>System Memory Obtained:</strong> ` + formatBytes(memStats.Sys) + `</p>
+					<p><strong>Number of Goroutines:</strong> ` + itoa(runtime.NumGoroutine()) + `</p>
+				</div>
 			</body>
 		</html>
 		`
@@ -62,4 +99,23 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	// Travel Routes
 	api.Post("/travels", controllers.CreateTravel)
 	api.Get("/travels/user/:userId", controllers.GetTravelsByUser)
+}
+
+
+// Helper functions
+func formatBytes(b uint64) string {
+	const unit = 1024
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := unit, 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %ciB", float64(b)/float64(div), "KMGTPE"[exp])
+}
+
+func itoa(i int) string {
+	return fmt.Sprintf("%d", i)
 }
