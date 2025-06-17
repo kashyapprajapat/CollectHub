@@ -39,7 +39,7 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	})
 
 	//System health route
-		app.Get("/hell", func(c *fiber.Ctx) error {
+		app.Get("/health", func(c *fiber.Ctx) error {
 		var memStats runtime.MemStats
 		runtime.ReadMemStats(&memStats)
 
