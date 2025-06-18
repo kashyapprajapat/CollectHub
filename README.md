@@ -8,6 +8,8 @@
 
 Api Documenataion 👨🏻‍💻 --> https://documenter.getpostman.com/view/36611651/2sB2x8Grko
 
+![postmandocs](./Demoimages/poatmanApiDoc.png)
+
 ---
 
 ## 🚀 Features
@@ -21,7 +23,14 @@ Api Documenataion 👨🏻‍💻 --> https://documenter.getpostman.com/view/366
 - 🌍 Travel memories (place, visited date, reason)
 
 ---
+## API Glimps
 
+| Home 🏠 | Health 📈 |
+|--------|--------|
+| ![apihome](./Demoimages/ApiHome.png) | ![apihealth](./Demoimages/apiHealth.png) |
+
+
+---
 ## 📦 Project Structure
 
 ```
