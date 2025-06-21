@@ -21,6 +21,7 @@ Api Documenataion 👨🏻‍💻 --> https://documenter.getpostman.com/view/366
 - 📝 Favorite quotes (quote, author)
 - 🐾 Pet favorites (name, reason)
 - 🌍 Travel memories (place, visited date, reason)
+- 🅰️ Ai personality teller
 
 ---
 ## API Glimps
@@ -59,6 +60,7 @@ cd CollectHub
 MONGO_URI=your_mongodb_connection_uri
 MONGO_DB=collecthub
 PORT=7777
+GEMINI_API_KEY=yourGemaaiapikey
 ```
 
 3. **Run the Server**
@@ -125,6 +127,7 @@ Visit [http://localhost:7777](http://localhost:7777) to view the HTML home messa
 - Go (Fiber Framework)
 - MongoDB
 - Postman (for API testing)
+- Gemini API (Ai Personality)
 
 ---
 
