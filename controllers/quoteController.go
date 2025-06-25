@@ -58,3 +58,101 @@ func GetQuotesByUser(c *fiber.Ctx) error {
 
 	return c.JSON(quotes)
 }
+
+func GetQuoteByID(c *fiber.Ctx) error {
+	quoteID := c.Params("id")
+	objID, err := primitive.ObjectIDFromHex(quoteID)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid quote ID"})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var quote models.Quote
+	filter := bson.M{"_id": objID}
+	err = quoteCollection.FindOne(ctx, filter).Decode(&quote)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return c.Status(404).JSON(fiber.Map{"error": "quote not found"})
+		}
+		return c.Status(500).JSON(fiber.Map{"error": "failed to fetch quote"})
+	}
+
+	return c.JSON(quote)
+}
+
+func UpdateQuote(c *fiber.Ctx) error {
+	quoteID := c.Params("id")
+	objID, err := primitive.ObjectIDFromHex(quoteID)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid quote ID"})
+	}
+
+	var updateData models.Quote
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "cannot parse JSON"})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Create update document, only include non-empty fields
+	update := bson.M{}
+	if updateData.Quote != "" {
+		update["quote"] = updateData.Quote
+	}
+	if updateData.Author != "" {
+		update["author"] = updateData.Author
+	}
+	if !updateData.UserID.IsZero() {
+		update["user_id"] = updateData.UserID
+	}
+
+	if len(update) == 0 {
+		return c.Status(400).JSON(fiber.Map{"error": "no fields to update"})
+	}
+
+	filter := bson.M{"_id": objID}
+	updateDoc := bson.M{"$set": update}
+
+	result, err := quoteCollection.UpdateOne(ctx, filter, updateDoc)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to update quote"})
+	}
+
+	if result.MatchedCount == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "quote not found"})
+	}
+
+	return c.JSON(fiber.Map{
+		"message":        "quote updated successfully",
+		"modified_count": result.ModifiedCount,
+	})
+}
+
+func DeleteQuote(c *fiber.Ctx) error {
+	quoteID := c.Params("id")
+	objID, err := primitive.ObjectIDFromHex(quoteID)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid quote ID"})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"_id": objID}
+	result, err := quoteCollection.DeleteOne(ctx, filter)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to delete quote"})
+	}
+
+	if result.DeletedCount == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "quote not found"})
+	}
+
+	return c.JSON(fiber.Map{
+		"message":       "quote deleted successfully",
+		"deleted_count": result.DeletedCount,
+	})
+}

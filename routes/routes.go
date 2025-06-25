@@ -94,6 +94,9 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	// Quote Routes
 	api.Post("/quotes", controllers.CreateQuote)
 	api.Get("/quotes/user/:userId", controllers.GetQuotesByUser)
+	api.Get("/quotes/:id", controllers.GetQuoteByID)
+    api.Put("/quotes/:id", controllers.UpdateQuote)
+    api.Delete("/quotes/:id", controllers.DeleteQuote)
 
 	// Pet Routes
 	api.Post("/pets", controllers.CreatePet)
