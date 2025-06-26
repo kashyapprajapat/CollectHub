@@ -133,3 +133,29 @@ func UpdateMovie(c *fiber.Ctx) error {
 		"modified_count": result.ModifiedCount,
 	})
 }
+
+func DeleteMovie(c *fiber.Ctx) error {
+	movieID := c.Params("id")
+	objID, err := primitive.ObjectIDFromHex(movieID)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid movie ID"})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"_id": objID}
+	result, err := movieCollection.DeleteOne(ctx, filter)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to delete movie"})
+	}
+
+	if result.DeletedCount == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "movie not found"})
+	}
+
+	return c.JSON(fiber.Map{
+		"message":       "movie deleted successfully",
+		"deleted_count": result.DeletedCount,
+	})
+}
