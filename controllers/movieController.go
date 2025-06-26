@@ -81,3 +81,55 @@ func GetMovieByID(c *fiber.Ctx) error {
 
 	return c.JSON(movie)
 }
+
+func UpdateMovie(c *fiber.Ctx) error {
+	movieID := c.Params("id")
+	objID, err := primitive.ObjectIDFromHex(movieID)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid movie ID"})
+	}
+
+	var updateData models.Movie
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "cannot parse JSON"})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Create update document, only include non-empty fields
+	update := bson.M{}
+	if updateData.Title != "" {
+		update["title"] = updateData.Title
+	}
+	if updateData.Type != "" {
+		update["type"] = updateData.Type
+	}
+	if updateData.Reason != "" {
+		update["reason"] = updateData.Reason
+	}
+	if !updateData.UserID.IsZero() {
+		update["user_id"] = updateData.UserID
+	}
+
+	if len(update) == 0 {
+		return c.Status(400).JSON(fiber.Map{"error": "no fields to update"})
+	}
+
+	filter := bson.M{"_id": objID}
+	updateDoc := bson.M{"$set": update}
+
+	result, err := movieCollection.UpdateOne(ctx, filter, updateDoc)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to update movie"})
+	}
+
+	if result.MatchedCount == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "movie not found"})
+	}
+
+	return c.JSON(fiber.Map{
+		"message":        "movie updated successfully",
+		"modified_count": result.ModifiedCount,
+	})
+}
