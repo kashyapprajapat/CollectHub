@@ -90,6 +90,9 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	// Movie Routes
 	api.Post("/movies", controllers.CreateMovie)
 	api.Get("/movies/user/:userId", controllers.GetMoviesByUser)
+	api.Get("/movies/:id", controllers.GetMovieByID)
+    api.Put("/movies/:id", controllers.UpdateMovie)
+    api.Delete("/movies/:id", controllers.DeleteMovie)
 
 	// Quote Routes
 	api.Post("/quotes", controllers.CreateQuote)
