@@ -73,8 +73,9 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	api := app.Group("/api")
 
 	// User Routes
-	api.Post("/users", controllers.CreateUser)
-	api.Get("/users", controllers.GetUsers)
+    api.Post("/users", controllers.CreateUser)
+    api.Get("/users", controllers.GetUsers)
+    api.Post("/users/login", controllers.LoginUser)
 
 	// Book Routes
 	api.Post("/books", controllers.CreateBook)
