@@ -115,6 +115,9 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	// Travel Routes
 	api.Post("/travels", controllers.CreateTravel)
 	api.Get("/travels/user/:userId", controllers.GetTravelsByUser)
+	api.Get("/travels/:id", controllers.GetTravelByID)             
+    api.Put("/travels/:id", controllers.UpdateTravel)                
+    api.Delete("/travels/:id", controllers.DeleteTravel)
 
 	// 🤖 AI Personality Analysis Route
 	api.Post("/aipersonality/analysis", controllers.GetAIPersonalityAnalysis(db))
