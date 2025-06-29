@@ -268,7 +268,7 @@ func getRecipeByUserID(db *mongo.Database, userID string) ([]fiber.Map, error) {
 }
 
 // Top 3 ✈️🧳🚢 by id
-func getTravelByUserID(db *mongo.Database, userID string) ([]fiber.Map, error) {
+func GetTravelByUserID(db *mongo.Database, userID string) ([]fiber.Map, error) {
     oid, err := primitive.ObjectIDFromHex(userID)
     if err != nil {
         return nil, errors.New("invalid user ID format")
@@ -484,7 +484,7 @@ func collectUserDataConcurrently(db *mongo.Database, userID string) (*UserData, 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		travel, err := getTravelByUserID(db, userID)
+		travel, err := GetTravelByUserID(db, userID)
 		if err != nil {
 			errorChan <- fmt.Errorf("travel error: %v", err)
 			return
