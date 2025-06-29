@@ -277,7 +277,7 @@ func getTravelByUserID(db *mongo.Database, userID string) ([]fiber.Map, error) {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
-    collection := db.Collection("travelbuddies")
+    collection := db.Collection("travels")
 
     cursor, err := collection.Find(ctx, bson.M{"user_id": oid})
     if err != nil {

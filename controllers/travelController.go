@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"time"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,6 +24,26 @@ func CreateTravel(c *fiber.Ctx) error {
 	var travel models.TravelBuddy
 	if err := c.BodyParser(&travel); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "cannot parse JSON"})
+	}
+
+	if strings.TrimSpace(travel.PlaceName) == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "place_name is required"})
+	}
+	if strings.TrimSpace(travel.Reason) == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "reason is required"})
+	}
+	if travel.UserID.IsZero() {
+		return c.Status(400).JSON(fiber.Map{"error": "user_id is required"})
+	}
+	
+	// If date_visited is not provided or is zero, set it to current time
+	if travel.DateVisited.IsZero() {
+		travel.DateVisited = time.Now()
+	}
+
+	// Generate new ObjectID if not provided
+	if travel.ID.IsZero() {
+		travel.ID = primitive.NewObjectID()
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
