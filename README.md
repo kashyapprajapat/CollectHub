@@ -8,7 +8,7 @@
 
 Api Documenataion 👨🏻‍💻 --> https://documenter.getpostman.com/view/36611651/2sB2x8Grko
 
-![postmandocs](./Demoimages/poatmanApiDoc.png)
+![postmandocs](./Demoimages/NewApiPostman.png)
 
 ---
 
