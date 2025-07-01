@@ -26,7 +26,7 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 				<title>CollectHub API</title>
 			</head>
 			<body>
-				<h1>🚀 Welcome to the CollectHub API</h1>
+				<h1>Welcome to the CollectHub API</h1>
 				<p>This is the backend service for managing users and collections (books, movies, quotes, pets, travel, etc.).</p>
 			</body>
 		</html>
@@ -56,7 +56,7 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 			</head>
 			<body>
 				<div class="container">
-					<h1>🌐 System Health Dashboard</h1>
+					<h1>System Health Dashboard</h1>
 					<p><strong>Go Version:</strong> ` + runtime.Version() + `</p>
 					<p><strong>Num CPU:</strong> ` + itoa(runtime.NumCPU()) + `</p>
 					<p><strong>Memory Allocated:</strong> ` + formatBytes(memStats.Alloc) + `</p>
