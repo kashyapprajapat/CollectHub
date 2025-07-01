@@ -22,6 +22,7 @@ Api Documenataion 👨🏻‍💻 --> https://documenter.getpostman.com/view/366
 - 🐾 Pet favorites (name, reason)
 - 🌍 Travel memories (place, visited date, reason)
 - 🅰️ Ai personality teller
+- 📝 In All CRUD Operation Avilable.
 
 ---
 ## API Glimps
