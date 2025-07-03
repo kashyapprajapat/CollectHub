@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
     "runtime"
+	"time"
 	"fmt"
 	"github.com/kashyapprajapat/collecthub_api/controllers"
 )
@@ -38,35 +39,76 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 		return c.SendString("Pong")
 	})
 
+	var startTime = time.Now()
+	
 	//System health route
-		app.Get("/health", func(c *fiber.Ctx) error {
+    app.Get("/health", func(c *fiber.Ctx) error {
 		var memStats runtime.MemStats
 		runtime.ReadMemStats(&memStats)
 
-		htmlContent := `
+		uptime := time.Since(startTime).Truncate(time.Second)
+
+		htmlContent := fmt.Sprintf(`
+		<!DOCTYPE html>
 		<html>
-			<head>
-				<title>System Status - CollectHub</title>
-				<style>
-					body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
-					.container { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-					h1 { color: #333; }
-					p { font-size: 16px; }
-				</style>
-			</head>
-			<body>
-				<div class="container">
-					<h1>System Health Dashboard</h1>
-					<p><strong>Go Version:</strong> ` + runtime.Version() + `</p>
-					<p><strong>Num CPU:</strong> ` + itoa(runtime.NumCPU()) + `</p>
-					<p><strong>Memory Allocated:</strong> ` + formatBytes(memStats.Alloc) + `</p>
-					<p><strong>Total Memory Allocated:</strong> ` + formatBytes(memStats.TotalAlloc) + `</p>
-					<p><strong>System Memory Obtained:</strong> ` + formatBytes(memStats.Sys) + `</p>
-					<p><strong>Number of Goroutines:</strong> ` + itoa(runtime.NumGoroutine()) + `</p>
-				</div>
-			</body>
+		<head>
+			<title>System Health - CollectHub</title>
+			<style>
+				body {
+					font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+					background-color: #f0f2f5;
+					margin: 0;
+					padding: 30px;
+				}
+				.container {
+					background: white;
+					max-width: 700px;
+					margin: auto;
+					padding: 30px;
+					border-radius: 12px;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				}
+				h1 {
+					color: #2c3e50;
+					margin-bottom: 20px;
+				}
+				p {
+					font-size: 16px;
+					color: #34495e;
+					margin: 8px 0;
+				}
+				.label {
+					font-weight: bold;
+				}
+				.footer {
+					margin-top: 30px;
+					font-size: 14px;
+					color: #888;
+					text-align: center;
+				}
+			</style>
+		</head>
+		<body>
+			<div class="container">
+				<h1>System Health Dashboard</h1>
+				<p><span class="label">Go Version:</span> %s</p>
+				<p><span class="label">Num CPU:</span> %d</p>
+				<p><span class="label">Uptime:</span> %s</p>
+				<p><span class="label">Goroutines:</span> %d</p>
+				<p><span class="label">GC Cycles:</span> %d</p>
+				<hr>
+				<p><span class="label">Memory Allocated:</span> %s</p>
+				<p><span class="label">Total Memory Allocated:</span> %s</p>
+				<p><span class="label">System Memory Obtained:</span> %s</p>
+			</div>
+			<div class="footer">
+				&copy; 2025 CollectHub. All rights reserved.
+			</div>
+		</body>
 		</html>
-		`
+		`, runtime.Version(), runtime.NumCPU(), uptime, runtime.NumGoroutine(), memStats.NumGC,
+			formatBytes(memStats.Alloc), formatBytes(memStats.TotalAlloc), formatBytes(memStats.Sys))
+
 		return c.Type("html").SendString(htmlContent)
 	})
 
