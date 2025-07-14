@@ -33,6 +33,13 @@ Api Documenataion 👨🏻‍💻 --> https://documenter.getpostman.com/view/366
 
 
 ---
+#### API Health Routes
+
+|  |  |
+|--------|--------|
+| ![apihome](./Demoimages/healthv2_1.png) | ![apihealth](./Demoimages/healthv2.png) |
+
+---
 ## 📦 Project Structure
 
 ```
