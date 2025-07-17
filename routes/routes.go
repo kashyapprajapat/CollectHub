@@ -1,12 +1,13 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/mongo"
-    "runtime"
-	"time"
 	"fmt"
+	"runtime"
+	"time"
+
+	"github.com/gofiber/fiber/v2"
 	"github.com/kashyapprajapat/collecthub_api/controllers"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func SetupRoutes(app *fiber.App, db *mongo.Database) {
@@ -22,16 +23,208 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	// Home Route
 	app.Get("/", func(c *fiber.Ctx) error {
 		htmlContent := `
-		<html>
-			<head>
-				<title>CollectHub API</title>
-			</head>
-			<body>
-				<h1>Welcome to the CollectHub API</h1>
-				<p>This is the backend service for managing users and collections (books, movies, quotes, pets, travel, etc.).</p>
-			</body>
-		</html>
-		`
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>CollectHub API</title>
+			<style>
+				* {
+					margin: 0;
+					padding: 0;
+					box-sizing: border-box;
+				}
+				
+				body {
+					font-family: 'Arial', sans-serif;
+					background: white;
+					min-height: 100vh;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					color: #333;
+				}
+				
+				.container {
+					background: white;
+					padding: 40px;
+					border-radius: 8px;
+					border: 1px solid #e2e8f0;
+					text-align: center;
+					max-width: 600px;
+					width: 90%;
+				}
+				
+				.header {
+					margin-bottom: 30px;
+				}
+				
+				h1 {
+					color: #4a5568;
+					font-size: 2.5em;
+					margin-bottom: 10px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 10px;
+				}
+				
+				.subtitle {
+					color: #718096;
+					font-size: 1.2em;
+					margin-bottom: 20px;
+				}
+				
+				.description {
+					color: #4a5568;
+					font-size: 1.1em;
+					line-height: 1.6;
+					margin-bottom: 30px;
+				}
+				
+				.features {
+					background: #f7fafc;
+					padding: 25px;
+					border-radius: 15px;
+					margin-bottom: 30px;
+				}
+				
+				.features h2 {
+					color: #2d3748;
+					margin-bottom: 20px;
+					font-size: 1.5em;
+				}
+				
+				.features-grid {
+					display: grid;
+					grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+					gap: 15px;
+					text-align: left;
+				}
+				
+				.feature-item {
+					background: white;
+					padding: 15px;
+					border-radius: 10px;
+					box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+				}
+				
+				.feature-item strong {
+					color: #4a5568;
+					display: block;
+					margin-bottom: 5px;
+				}
+				
+				.feature-item span {
+					color: #718096;
+					font-size: 0.9em;
+				}
+				
+				.buttons {
+					display: flex;
+					gap: 20px;
+					justify-content: center;
+					flex-wrap: wrap;
+				}
+				
+				.btn {
+					padding: 15px 30px;
+					border: none;
+					border-radius: 50px;
+					font-size: 1.1em;
+					font-weight: bold;
+					cursor: pointer;
+					text-decoration: none;
+					transition: all 0.3s ease;
+					display: inline-block;
+				}
+				
+				.btn-primary {
+					background: #22c55e;
+					color: white;
+				}
+				
+				.btn-primary:hover {
+					background: #16a34a;
+					transform: translateY(-2px);
+					box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+				}
+				
+				.btn-secondary {
+					background: white;
+					color: #4a5568;
+					border: 2px solid #e2e8f0;
+				}
+				
+				.btn-secondary:hover {
+					background: #f7fafc;
+					transform: translateY(-2px);
+					box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+				}
+				
+				.api-info {
+					background: #edf2f7;
+					padding: 20px;
+					border-radius: 10px;
+					margin-top: 30px;
+				}
+				
+				.api-info h3 {
+					color: #2d3748;
+					margin-bottom: 10px;
+				}
+				
+				.api-info p {
+					color: #4a5568;
+					margin-bottom: 0;
+				}
+				
+				@media (max-width: 768px) {
+					.container {
+						padding: 30px 20px;
+					}
+					
+					h1 {
+						font-size: 2em;
+					}
+					
+					.features-grid {
+						grid-template-columns: 1fr;
+					}
+					
+					.buttons {
+						flex-direction: column;
+						align-items: center;
+					}
+				}
+			</style>
+		</head>
+		<body>
+			<div class="container">
+				<div class="header">
+					<h1>CollectHub 🎒📃</h1>
+					<p class="subtitle">Your personal collections. All in one place.</p>
+				</div>
+				
+				<p class="description">
+					A unified platform to organize and store your personal collections. 
+				</p>
+				
+				<div class="buttons">
+					<a href="https://documenter.getpostman.com/view/36611651/2sB2x8Grko" 
+					   target="_blank" 
+					   class="btn btn-primary">
+						📖 View API Documentation
+					</a>
+					<a href="https://github.com/kashyapprajapat/CollectHub" class="btn btn-secondary">
+						🚀 Get Started
+					</a>
+				</div>
+			</div>
+		</body>
+	</html>
+	`
 		return c.Type("html").SendString(htmlContent)
 	})
 
@@ -40,28 +233,28 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	})
 
 	var startTime = time.Now()
-	
+
 	//System health route - Enhanced Reactive Dashboard with 6 Boxes
-    app.Get("/health", func(c *fiber.Ctx) error {
+	app.Get("/health", func(c *fiber.Ctx) error {
 		var memStats runtime.MemStats
 		runtime.ReadMemStats(&memStats)
 
 		uptime := time.Since(startTime).Truncate(time.Second)
-		
+
 		// Enhanced metrics calculations
 		allocRate := float64(memStats.TotalAlloc) / time.Since(startTime).Seconds()
 		gcPauseAvg := float64(memStats.PauseTotalNs) / float64(memStats.NumGC) / 1000000 // Convert to ms
 		heapInUse := float64(memStats.HeapInuse) / float64(memStats.HeapSys) * 100
-		
+
 		// Additional calculations for new boxes
 		memoryEfficiency := (float64(memStats.HeapInuse) / float64(memStats.HeapSys)) * 100
 		gcEfficiency := 100 - (float64(memStats.PauseTotalNs) / float64(time.Since(startTime).Nanoseconds()) * 100)
 		cpuUsage := float64(runtime.NumGoroutine()) / float64(runtime.NumCPU()) * 10 // Approximation
-		
+
 		// Network simulation (in real app, you'd get actual network stats)
-		networkIn := float64(memStats.TotalAlloc) / (1024 * 1024) * 0.1 // Simulated
+		networkIn := float64(memStats.TotalAlloc) / (1024 * 1024) * 0.1   // Simulated
 		networkOut := float64(memStats.TotalAlloc) / (1024 * 1024) * 0.05 // Simulated
-		
+
 		if gcPauseAvg != gcPauseAvg { // Check for NaN
 			gcPauseAvg = 0
 		}
@@ -635,35 +828,35 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 			</script>
 		</body>
 		</html>
-		`, 
-		runtime.Version(), 
-		runtime.NumCPU(), 
-		uptime, 
-		runtime.NumGoroutine(),
-		formatBytes(memStats.Alloc),
-		formatBytes(memStats.TotalAlloc),
-		formatBytes(memStats.Sys),
-		heapInUse,
-		heapInUse,
-		memStats.NumGC,
-		gcPauseAvg,
-		allocRate / (1024 * 1024), // Convert to MB/s
-		memStats.Mallocs - memStats.Frees,
-		gcEfficiency, // Chart width for performance
-		formatBytes(memStats.StackInuse),
-		memStats.HeapObjects,
-		formatBytes(memStats.NextGC),
-		networkIn, // Network In
-		networkOut, // Network Out
-		int(cpuUsage * 5), // Simulated active connections
-		(networkIn + networkOut) / 2, // Throughput
-		(networkIn + networkOut) / 4, // Progress bar for network
-		memoryEfficiency,
-		gcEfficiency,
-		cpuUsage,
-		(memoryEfficiency + gcEfficiency + (100 - cpuUsage)) / 3, // Overall score
-		(memoryEfficiency + gcEfficiency + (100 - cpuUsage)) / 3, // Chart width for efficiency
-		time.Now().Format("2006-01-02 15:04:05 MST"))
+		`,
+			runtime.Version(),
+			runtime.NumCPU(),
+			uptime,
+			runtime.NumGoroutine(),
+			formatBytes(memStats.Alloc),
+			formatBytes(memStats.TotalAlloc),
+			formatBytes(memStats.Sys),
+			heapInUse,
+			heapInUse,
+			memStats.NumGC,
+			gcPauseAvg,
+			allocRate/(1024*1024), // Convert to MB/s
+			memStats.Mallocs-memStats.Frees,
+			gcEfficiency, // Chart width for performance
+			formatBytes(memStats.StackInuse),
+			memStats.HeapObjects,
+			formatBytes(memStats.NextGC),
+			networkIn,                // Network In
+			networkOut,               // Network Out
+			int(cpuUsage*5),          // Simulated active connections
+			(networkIn+networkOut)/2, // Throughput
+			(networkIn+networkOut)/4, // Progress bar for network
+			memoryEfficiency,
+			gcEfficiency,
+			cpuUsage,
+			(memoryEfficiency+gcEfficiency+(100-cpuUsage))/3, // Overall score
+			(memoryEfficiency+gcEfficiency+(100-cpuUsage))/3, // Chart width for efficiency
+			time.Now().Format("2006-01-02 15:04:05 MST"))
 
 		return c.Type("html").SendString(htmlContent)
 	})
@@ -671,56 +864,55 @@ func SetupRoutes(app *fiber.App, db *mongo.Database) {
 	api := app.Group("/api")
 
 	// User Routes
-    api.Post("/users", controllers.CreateUser)
-    api.Get("/users", controllers.GetUsers)
-    api.Post("/users/login", controllers.LoginUser)
+	api.Post("/users", controllers.CreateUser)
+	api.Get("/users", controllers.GetUsers)
+	api.Post("/users/login", controllers.LoginUser)
 
 	// Book Routes
 	api.Post("/books", controllers.CreateBook)
 	api.Get("/books/user/:userId", controllers.GetBooksByUser)
 	api.Get("/books/:id", controllers.GetBookByID)
-    api.Put("/books/:id", controllers.UpdateBook)
-    api.Delete("/books/:id", controllers.DeleteBook)
+	api.Put("/books/:id", controllers.UpdateBook)
+	api.Delete("/books/:id", controllers.DeleteBook)
 
 	// Recipe Routes
 	api.Post("/recipes", controllers.CreateRecipe)
 	api.Get("/recipes/user/:userId", controllers.GetRecipesByUser)
-	api.Get("/recipes/:id", controllers.GetRecipeByID)               
-    api.Put("/recipes/:id", controllers.UpdateRecipe)        
-	api.Delete("/recipes/:id", controllers.DeleteRecipe)         
+	api.Get("/recipes/:id", controllers.GetRecipeByID)
+	api.Put("/recipes/:id", controllers.UpdateRecipe)
+	api.Delete("/recipes/:id", controllers.DeleteRecipe)
 
 	// Movie Routes
 	api.Post("/movies", controllers.CreateMovie)
 	api.Get("/movies/user/:userId", controllers.GetMoviesByUser)
 	api.Get("/movies/:id", controllers.GetMovieByID)
-    api.Put("/movies/:id", controllers.UpdateMovie)
-    api.Delete("/movies/:id", controllers.DeleteMovie)
+	api.Put("/movies/:id", controllers.UpdateMovie)
+	api.Delete("/movies/:id", controllers.DeleteMovie)
 
 	// Quote Routes
 	api.Post("/quotes", controllers.CreateQuote)
 	api.Get("/quotes/user/:userId", controllers.GetQuotesByUser)
 	api.Get("/quotes/:id", controllers.GetQuoteByID)
-    api.Put("/quotes/:id", controllers.UpdateQuote)
-    api.Delete("/quotes/:id", controllers.DeleteQuote)
+	api.Put("/quotes/:id", controllers.UpdateQuote)
+	api.Delete("/quotes/:id", controllers.DeleteQuote)
 
 	// Pet Routes
 	api.Post("/pets", controllers.CreatePet)
 	api.Get("/pets/user/:userId", controllers.GetPetsByUser)
 	api.Get("/pets/:id", controllers.GetPetByID)
-    api.Put("/pets/:id", controllers.UpdatePet)
-    api.Delete("/pets/:id", controllers.DeletePet)
+	api.Put("/pets/:id", controllers.UpdatePet)
+	api.Delete("/pets/:id", controllers.DeletePet)
 
 	// Travel Routes
 	api.Post("/travels", controllers.CreateTravel)
 	api.Get("/travels/user/:userId", controllers.GetTravelsByUser)
-	api.Get("/travels/:id", controllers.GetTravelByID)             
-    api.Put("/travels/:id", controllers.UpdateTravel)                
-    api.Delete("/travels/:id", controllers.DeleteTravel)
+	api.Get("/travels/:id", controllers.GetTravelByID)
+	api.Put("/travels/:id", controllers.UpdateTravel)
+	api.Delete("/travels/:id", controllers.DeleteTravel)
 
 	// 🤖 AI Personality Analysis Route
 	api.Post("/aipersonality/analysis", controllers.GetAIPersonalityAnalysis(db))
 }
-
 
 // Helper functions
 func formatBytes(b uint64) string {
